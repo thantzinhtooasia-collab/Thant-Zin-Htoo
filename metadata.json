@@ -1,0 +1,6 @@
+{
+  "name": "MyanmarConnect",
+  "description": "Android social platform for Myanmar migrant workers living and working in Thailand featuring job boards, legal advice, community groups, chat, and feeds in Burmese.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

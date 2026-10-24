@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    // Timeline Posts
+    match /posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
+      allow update: if isAuthenticated() && (
+        resource.data.authorId == request.auth.uid ||
+        // Allow liking post: updating only likedByUids and likeCount
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedByUids', 'likeCount', 'commentCount', 'shareCount'])
+      );
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+
+      // Post comments subcollection
+      match /comments/{commentId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
+        allow delete: if isAuthenticated() && (
+          resource.data.authorId == request.auth.uid ||
+          get(/databases/$(database)/documents/posts/$(postId)).data.authorId == request.auth.uid
+        );
+      }
+    }
+
+    // Community Groups
+    match /groups/{groupId} {
+      allow read: if isAuthenticated();
+      // Allow joining/leaving: updating memberCount and memberUids
+      allow update: if isAuthenticated() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberCount', 'memberUids']);
+      allow create, delete: if false; // Reserved for admin
+    }
+
+    // Direct 1-to-1 Chat Messages
+    // Strictly isolate private messages so only participants can access
+    match /chats/{conversationId}/messages/{messageId} {
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid ||
+        resource.data.recipientId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.senderId == request.auth.uid;
+    }
+
+    // In-app Notifications
+    match /notifications/{notificationId} {
+      allow read, update, delete: if isAuthenticated() && resource.data.recipientUid == request.auth.uid;
+      allow create: if isAuthenticated();
+    }
+
+    // Safety and Moderation Reports
+    match /reports/{reportId} {
+      allow create: if isAuthenticated() && request.resource.data.reporterUid == request.auth.uid;
+      allow read, update, delete: if false; // Admin moderation dashboard only
+    }
+  }
+}

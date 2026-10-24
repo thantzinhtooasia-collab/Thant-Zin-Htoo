@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyanmarConnect</string>
+    <string name="nav_home">ပင်မစာမျက်နှာ</string>
+    <string name="nav_groups">အုပ်စုများ</string>
+    <string name="nav_chat">Chat</string>
+    <string name="nav_notifications">အသိပေးချက်</string>
+    <string name="nav_profile">ကိုယ်ရေးအချက်အလက်</string>
+</resources>

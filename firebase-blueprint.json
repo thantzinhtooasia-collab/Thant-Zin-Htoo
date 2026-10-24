@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "users": {
+      "path": "users/{uid}",
+      "description": "Registered Myanmar migrant worker profiles",
+      "fields": {
+        "uid": { "type": "string", "description": "Unique user ID" },
+        "displayName": { "type": "string", "description": "Display name in Burmese or English" },
+        "phoneOrEmail": { "type": "string", "description": "Contact identifier" },
+        "bio": { "type": "string", "description": "Short bio or workplace note" },
+        "avatarUrl": { "type": "string", "description": "Profile picture URL" },
+        "locationThai": { "type": "string", "description": "Thai province or city" },
+        "occupation": { "type": "string", "description": "Workplace industry or sector" },
+        "joinedAt": { "type": "timestamp", "description": "Account registration timestamp" }
+      }
+    },
+    "posts": {
+      "path": "posts/{postId}",
+      "description": "Community timeline posts with text and photos",
+      "fields": {
+        "id": { "type": "string", "description": "Unique post ID" },
+        "authorId": { "type": "string", "description": "Author UID" },
+        "authorName": { "type": "string", "description": "Author display name" },
+        "authorAvatar": { "type": "string", "description": "Author avatar URL" },
+        "authorLocation": { "type": "string", "description": "Thai city location" },
+        "content": { "type": "string", "description": "Post text content" },
+        "imageUri": { "type": "string", "optional": true, "description": "Attached image URL or URI" },
+        "groupId": { "type": "string", "optional": true, "description": "Associated group ID" },
+        "groupName": { "type": "string", "optional": true, "description": "Associated group Burmese name" },
+        "likeCount": { "type": "number", "description": "Total like counter" },
+        "commentCount": { "type": "number", "description": "Total comment counter" },
+        "shareCount": { "type": "number", "description": "Total share counter" },
+        "likedByUids": { "type": "array", "description": "Array of UIDs who liked this post" },
+        "timestamp": { "type": "timestamp", "description": "Server creation timestamp" }
+      }
+    },
+    "comments": {
+      "path": "posts/{postId}/comments/{commentId}",
+      "description": "Comments attached to a specific post",
+      "fields": {
+        "id": { "type": "string", "description": "Comment ID" },
+        "postId": { "type": "string", "description": "Parent post ID" },
+        "authorId": { "type": "string", "description": "Commenter UID" },
+        "authorName": { "type": "string", "description": "Commenter display name" },
+        "authorAvatar": { "type": "string", "description": "Commenter avatar URL" },
+        "text": { "type": "string", "description": "Comment text" },
+        "timestamp": { "type": "timestamp", "description": "Creation timestamp" }
+      }
+    },
+    "groups": {
+      "path": "groups/{groupId}",
+      "description": "Worker discussion groups and hubs",
+      "fields": {
+        "id": { "type": "string", "description": "Group ID" },
+        "nameBurmese": { "type": "string", "description": "Group title in Burmese" },
+        "nameEnglish": { "type": "string", "description": "Group title in English" },
+        "descriptionBurmese": { "type": "string", "description": "Group description and purpose" },
+        "category": { "type": "string", "description": "Category badge" },
+        "memberCount": { "type": "number", "description": "Number of group members" },
+        "memberUids": { "type": "array", "description": "List of member user IDs" },
+        "iconKey": { "type": "string", "description": "Icon resource key" }
+      }
+    },
+    "messages": {
+      "path": "chats/{conversationId}/messages/{messageId}",
+      "description": "Private 1-to-1 chat messages between authenticated users",
+      "fields": {
+        "id": { "type": "string", "description": "Message ID" },
+        "conversationId": { "type": "string", "description": "Composite conversation identifier" },
+        "senderId": { "type": "string", "description": "Author UID" },
+        "senderName": { "type": "string", "description": "Sender display name" },
+        "recipientId": { "type": "string", "description": "Recipient UID" },
+        "text": { "type": "string", "description": "Message text" },
+        "timestamp": { "type": "timestamp", "description": "Timestamp" }
+      }
+    },
+    "notifications": {
+      "path": "notifications/{notificationId}",
+      "description": "In-app notifications for worker interactions",
+      "fields": {
+        "id": { "type": "string", "description": "Notification ID" },
+        "recipientUid": { "type": "string", "description": "Target recipient UID" },
+        "senderName": { "type": "string", "description": "Triggering user name" },
+        "type": { "type": "string", "description": "LIKE, COMMENT, MESSAGE, GROUP, SYSTEM" },
+        "messageBurmese": { "type": "string", "description": "Burmese notification text" },
+        "targetPostId": { "type": "string", "optional": true, "description": "Linked post ID" },
+        "targetChatUserId": { "type": "string", "optional": true, "description": "Linked chat UID" },
+        "isRead": { "type": "boolean", "description": "Read status flag" },
+        "timestamp": { "type": "timestamp", "description": "Timestamp" }
+      }
+    },
+    "reports": {
+      "path": "reports/{reportId}",
+      "description": "Content moderation reports submitted by users",
+      "fields": {
+        "id": { "type": "string", "description": "Report ID" },
+        "postId": { "type": "string", "description": "Target post ID" },
+        "reporterUid": { "type": "string", "description": "Reporting user UID" },
+        "reasonBurmese": { "type": "string", "description": "Reason for violation" },
+        "reportedAt": { "type": "timestamp", "description": "Report timestamp" }
+      }
+    }
+  }
+}
